@@ -5,6 +5,8 @@
  */
 package slidepuzzle;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,6 +16,8 @@ import javafx.scene.Group;
 import javafx.stage.Stage;
 import javafx.scene.image.*;
 import javafx.scene.text.*;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 
 /**
@@ -28,11 +32,12 @@ public class SlidePuzzle extends Application {
     private final int RIGHT_GROUP_SPACING = 40;
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
         
         Group root = new Group();
         Group left = new Group();
         Group right = new Group();
+        int emptyNumber = 16;
         
         //RIGHT
         
@@ -76,29 +81,32 @@ public class SlidePuzzle extends Application {
         logFlow.setLayoutY(logLabel.getLayoutY() 
                 + logLabel.getHeight() + RIGHT_GROUP_SPACING);
 
-        root.getChildren().addAll(left, right);
-        left.getChildren().addAll();
-        right.getChildren().addAll(counterLabel, counterField, shuffleButton,
-                newPictureButton, logLabel, logFlow);
         
-        right.setLayoutX(HEIGHT + RIGHT_GROUP_LEFT_MARGIN);
         
         //LEFT
         
-        Image[] arrayOfImages;
-        arrayOfImages = new Image[16];
-        int index = 0;
-        for(Image pic : arrayOfImages){
-            pic = new Image("images\\" + Integer.toString(index) + ".png");
-            index++;
+        PuzzlePiece[] arrayOfImageViews;
+        arrayOfImageViews = new PuzzlePiece[16];
+        for(int i = 0; i<15; i++){
+            arrayOfImageViews[i] = new PuzzlePiece(new Image(new FileInputStream("src\\images\\" + Integer.toString(i) + ".png")), i);
+            arrayOfImageViews[i].setX((i%4)*120);
+            arrayOfImageViews[i].setY((i/4)*120);
         }
-        
+        /*
         PuzzlePiece[] arrayOfPuzzles;
         arrayOfPuzzles = new PuzzlePiece[16];
         for(PuzzlePiece piece : arrayOfPuzzles){
             
         }
-
+        */
+        
+        root.getChildren().addAll(left, right);
+        left.getChildren().addAll(arrayOfImageViews);
+        right.getChildren().addAll(counterLabel, counterField, shuffleButton,
+                newPictureButton, logLabel, logFlow);
+        
+        right.setLayoutX(HEIGHT + RIGHT_GROUP_LEFT_MARGIN);
+        
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         
         primaryStage.setTitle("Sliding Puzzles");
