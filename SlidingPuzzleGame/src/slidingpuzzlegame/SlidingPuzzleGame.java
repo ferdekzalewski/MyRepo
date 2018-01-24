@@ -31,6 +31,7 @@ public class SlidingPuzzleGame extends Application {
     private final int RIGHT_GROUP_LEFT_MARGIN = 40;
     private final int RIGHT_GROUP_TOP_MARGIN = 40;
     private final int RIGHT_GROUP_SPACING = 40;
+    private World world;
     
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
@@ -44,6 +45,7 @@ public class SlidingPuzzleGame extends Application {
                 System.out.println("Hello World!");
             }
         });*/
+        world = new World(this);
         
         Label counterLabel = new Label("Moves:");
         counterLabel.setLayoutY(RIGHT_GROUP_TOP_MARGIN);
@@ -61,7 +63,11 @@ public class SlidingPuzzleGame extends Application {
             
             @Override
             public void handle(ActionEvent event) {
-                shuffle();
+                try {
+                    shuffle();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SlidingPuzzleGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
@@ -76,8 +82,6 @@ public class SlidingPuzzleGame extends Application {
                 loadNewPicture();
             }
         });
-        
-        World world = new World(this);
         
         Group root = new Group();
         Group left = new Group();
@@ -96,6 +100,7 @@ public class SlidingPuzzleGame extends Application {
         primaryStage.setTitle("Puzzle!");
         primaryStage.setScene(scene);
         primaryStage.show();
+        world.printWorld();
     }
 
     /**
@@ -105,7 +110,8 @@ public class SlidingPuzzleGame extends Application {
         launch(args);
     }
     
-    public void shuffle(){
+    public void shuffle() throws InterruptedException{
+        world.shuffle();
         //TODO
     }
     
