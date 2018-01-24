@@ -7,6 +7,10 @@ package slidingpuzzlegame;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 
@@ -24,19 +28,20 @@ public class World {
         map = new Piece[4][4];
         for(int i = 0; i<4; i++){
             for(int j = 0; j<4; j++){
-            map[i][j] = new Piece(new Image(new FileInputStream("src\\images\\" + Integer.toString(4*i+j) + ".png")), j, i, this);
+            map[i][j] = new Piece(new Image(new FileInputStream("src\\images\\" + Integer.toString(4*i+j) + ".png")), 4*i+j, j, i, this);
             map[i][j].setX(j*120);
             map[i][j].setY(i*120);
             }
         }
-        map[3][3].setVisible(false);
+        map[3][3] = null;
         emptyX = 3;
         emptyY = 3;
     }
     public void addToGroup(Group group){
         for(Piece[] raw : map){
             for(Piece element : raw){
-                group.getChildren().add(element);
+                if(element != null)
+                    group.getChildren().add(element);
             }
         }
     }
@@ -44,7 +49,7 @@ public class World {
     public void checkWin() {
         for (int i = 0; i< 4; i++){
             for (int j = 0; j<4; j++){
-                if (map[i][j].getCurrentPoz() != 4*i + j)
+                if (map[i][j].getCorrectPoz() != 4*i + j)
                     return;
             }
         }
@@ -65,5 +70,69 @@ public class World {
     
     public void setEmptyY(int empty){
         this.emptyY = empty;
+    }
+
+    public void shuffle() throws InterruptedException{
+        Random randomGenerator = new Random();
+        ArrayList<Piece> neighbors;
+        for(int i = 0; i<2; i++){
+            neighbors = getNeighbors();
+            neighbors.get(randomGenerator.nextInt(neighbors.size())).swipe();
+            System.out.println(i);
+            printWorld();
+        }
+    }
+    
+    private ArrayList<Piece> getNeighbors(){
+        ArrayList<Piece> neighbors = new ArrayList<>();
+        if(emptyX < 3){
+            neighbors.add(map[emptyY][emptyX + 1]);
+        }
+        if(emptyX > 0){
+            neighbors.add(map[emptyY][emptyX - 1]);
+        }
+        if(emptyY < 3){
+            neighbors.add(map[emptyY + 1][emptyX]);
+        }
+        if(emptyY > 0){
+            neighbors.add(map[emptyY - 1][emptyX]);
+        }
+        return neighbors;
+    }
+    
+    public void setMapField(int y, int x, Piece piece){
+        map[y][x] = piece;
+    }
+    
+    public int getIndexXOfFieldInMap(Piece wanted){
+        for (int i = 0; i< 4; i++){
+            for (int j = 0; j<4; j++){
+                if(map[i][j] == wanted)
+                    return  j;
+            }
+        }
+        return -1;
+    }
+    
+    public int getIndexYOfFieldInMap(Piece wanted){
+        for (int i = 0; i< 4; i++){
+            for (int j = 0; j<4; j++){
+                if(map[i][j] == wanted)
+                    return  i;
+            }
+        }
+        return -1;
+    }
+    
+    public void printWorld(){
+        for(Piece[] raw : map){
+            for(Piece element : raw){
+                if (element == null)
+                    System.out.print("X\t");
+                else
+                    System.out.print(element.getNumber() + "\t");
+            }
+            System.out.print("\n");
+        }
     }
 }
