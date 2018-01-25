@@ -5,6 +5,7 @@
  */
 package slidingpuzzlegame;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
@@ -137,8 +139,10 @@ public class SlidingPuzzleGame extends Application {
         //TODO
     }
     
-    public void endGame(){
-        //TODO
+    public void endGame() throws FileNotFoundException{
+        world.setMapField(SIZE - 1, SIZE - 1, new Piece(new Image(new FileInputStream("src\\images\\" 
+                + Integer.toString(SIZE * SIZE - 1) + ".png")), SIZE * SIZE - 1, SIZE - 1 , SIZE - 1, world));
+        left.getChildren().removeAll(left.getChildren());
+        world.addToGroup(left);
     }
-    
 }

@@ -20,11 +20,11 @@ import javafx.util.Duration;
 
 public class Piece extends ImageView {
     
-    private int pozX;
-    private int pozY;
-    private int number;
-    private World world;
-    private TranslateTransition move;
+    private final int pozX;
+    private final int pozY;
+    private final int number;
+    private final World world;
+    private final TranslateTransition move;
     private boolean isShuffling;
     
     public Piece(Image image, int number, int pozX, int pozY, World world){
@@ -105,8 +105,11 @@ public class Piece extends ImageView {
         }
     }
 
-    public int getCorrectPoz() {
-        return 4*pozX + pozY;
+    public boolean isCorrect() {
+        if(world.getIndexYOfFieldInMap(this) == pozY 
+                && world.getIndexXOfFieldInMap(this) == pozX)
+            return true;
+        return false;
     }
     
     public String getNumber(){

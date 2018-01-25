@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 
@@ -27,17 +29,17 @@ public class World {
     public World(SlidingPuzzleGame game) throws FileNotFoundException{
         this.game = game;
         this.moves = 0;
-        map = new Piece[4][4];
-        for(int i = 0; i<4; i++){
-            for(int j = 0; j<4; j++){
-            map[i][j] = new Piece(new Image(new FileInputStream("src\\images\\" + Integer.toString(4*i+j) + ".png")), 4*i+j, j, i, this);
+        map = new Piece[game.SIZE][game.SIZE];
+        for(int i = 0; i<game.SIZE; i++){
+            for(int j = 0; j<game.SIZE; j++){
+            map[i][j] = new Piece(new Image(new FileInputStream("src\\images\\" + Integer.toString(4*i+j) + ".png")), game.SIZE*i+j, j, i, this);
             map[i][j].setX(j*120);
             map[i][j].setY(i*120);
             }
         }
-        map[3][3] = null;
-        emptyX = 3;
-        emptyY = 3;
+        map[game.SIZE - 1][game.SIZE - 1] = null;
+        emptyX = game.SIZE - 1;
+        emptyY = game.SIZE - 1;
     }
     public void addToGroup(Group group){
         for(Piece[] raw : map){
@@ -49,13 +51,22 @@ public class World {
     }
 
     public void checkWin() {
-        for (int i = 0; i< 4; i++){
-            for (int j = 0; j<4; j++){
-                if (map[i][j].getCorrectPoz() != 4*i + j)
-                    return;
+        for(Piece[] raw : map){
+            for(Piece element : raw){
+                if(element != null){
+                    if(!element.isCorrect()){
+                        System.out.println("unsorted");
+                        return;
+                    }
+                }
             }
         }
-        game.endGame();
+        System.out.println("gg");
+        try {
+            game.endGame();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public int getEmptyX(){
