@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
@@ -31,7 +32,18 @@ public class SlidingPuzzleGame extends Application {
     private final int RIGHT_GROUP_LEFT_MARGIN = 40;
     private final int RIGHT_GROUP_TOP_MARGIN = 40;
     private final int RIGHT_GROUP_SPACING = 40;
+    public final int SIZE = 4;
+    
+    private Label counterLabel;
+    private Label counterField;
+    private Button shuffleButton;
+    private Button newPictureButton;   
+    
     private World world;
+    
+    private Group root;
+    private Group left;
+    private VBox right;
     
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
@@ -47,34 +59,34 @@ public class SlidingPuzzleGame extends Application {
         });*/
         world = new World(this);
         
-        Label counterLabel = new Label("Moves:");
-        counterLabel.setLayoutY(RIGHT_GROUP_TOP_MARGIN);
+        counterLabel = new Label("Moves:");
+        //counterLabel.setLayoutY(RIGHT_GROUP_TOP_MARGIN);
         
-        Label counterField = new Label("0");
-        counterField.setLayoutY(counterLabel.getLayoutY() 
-                + counterLabel.getHeight() + RIGHT_GROUP_SPACING);
+        counterField = new Label("0");
+        //counterField.setLayoutY(counterLabel.getLayoutY() 
+                //+ counterLabel.getHeight() + RIGHT_GROUP_SPACING);
         //counterField.setTextAlignment(TextAlignment.RIGHT); TO DO
         
-        Button shuffleButton = new Button();
+        shuffleButton = new Button();
         shuffleButton.setText("Shuffle");
-        shuffleButton.setLayoutY(counterField.getLayoutY() 
-                + counterField.getHeight() + RIGHT_GROUP_SPACING);
+        //shuffleButton.setLayoutY(counterField.getLayoutY() 
+                //+ counterField.getHeight() + RIGHT_GROUP_SPACING);
         shuffleButton.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
             public void handle(ActionEvent event) {
                 try {
                     shuffle();
-                } catch (InterruptedException ex) {
+                } catch (InterruptedException | FileNotFoundException ex) {
                     Logger.getLogger(SlidingPuzzleGame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
         
-        Button newPictureButton = new Button();
+        newPictureButton = new Button();
         newPictureButton.setText("New Picture");
-        newPictureButton.setLayoutY(shuffleButton.getLayoutY() 
-                + shuffleButton.getHeight() + RIGHT_GROUP_SPACING);
+        //newPictureButton.setLayoutY(shuffleButton.getLayoutY() 
+                //+ shuffleButton.getHeight() + RIGHT_GROUP_SPACING);
         newPictureButton.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
@@ -83,9 +95,9 @@ public class SlidingPuzzleGame extends Application {
             }
         });
         
-        Group root = new Group();
-        Group left = new Group();
-        Group right = new Group();
+        root = new Group();
+        left = new Group();
+        right = new VBox();
         
         root.getChildren().addAll(left, right);
         left.getChildren().addAll();
@@ -110,9 +122,15 @@ public class SlidingPuzzleGame extends Application {
         launch(args);
     }
     
-    public void shuffle() throws InterruptedException{
+    public void shuffle() throws InterruptedException, FileNotFoundException{
+        world = new World(this);
+        left.getChildren().removeAll(left.getChildren());
+        world.addToGroup(left);
         world.shuffle();
-        //TODO
+    }
+    
+    public void refreshMoves(int value){
+        counterField.setText(Integer.toString(value));
     }
     
     public void loadNewPicture(){

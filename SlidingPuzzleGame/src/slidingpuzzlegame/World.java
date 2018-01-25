@@ -23,8 +23,10 @@ public class World {
     private final SlidingPuzzleGame game;
     private int emptyX;
     private int emptyY;
+    private int moves;
     public World(SlidingPuzzleGame game) throws FileNotFoundException{
         this.game = game;
+        this.moves = 0;
         map = new Piece[4][4];
         for(int i = 0; i<4; i++){
             for(int j = 0; j<4; j++){
@@ -75,12 +77,14 @@ public class World {
     public void shuffle() throws InterruptedException{
         Random randomGenerator = new Random();
         ArrayList<Piece> neighbors;
-        for(int i = 0; i<2; i++){
+        for(int i = 0; i<500; i++){
             neighbors = getNeighbors();
-            neighbors.get(randomGenerator.nextInt(neighbors.size())).swipe();
-            System.out.println(i);
+            neighbors.get(randomGenerator.nextInt(neighbors.size())).swipe(true);
+            System.out.println(i+1);
             printWorld();
         }
+        resetWorld();
+        game.refreshMoves(0);
     }
     
     private ArrayList<Piece> getNeighbors(){
@@ -124,6 +128,17 @@ public class World {
         return -1;
     }
     
+    public void resetWorld(){
+        for(int i = 0; i<4; i++){
+            for(int j = 0; j<4; j++){
+                if(map[i][j]!=null){
+                    map[i][j].setX(j*120);
+                    map[i][j].setY(i*120);
+                }
+            }
+        }
+    }
+    
     public void printWorld(){
         for(Piece[] raw : map){
             for(Piece element : raw){
@@ -134,5 +149,10 @@ public class World {
             }
             System.out.print("\n");
         }
+    }
+    
+    public void increaseMoves(){
+        moves++;
+        game.refreshMoves(moves);
     }
 }
