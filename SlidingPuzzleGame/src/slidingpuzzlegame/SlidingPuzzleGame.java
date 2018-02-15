@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -77,15 +76,11 @@ public class SlidingPuzzleGame extends Application {
         shuffleButton.setText("Shuffle");
         //shuffleButton.setLayoutY(counterField.getLayoutY() 
                 //+ counterField.getHeight() + RIGHT_GROUP_SPACING);
-        shuffleButton.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    shuffle();
-                } catch (InterruptedException | FileNotFoundException ex) {
-                    Logger.getLogger(SlidingPuzzleGame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        shuffleButton.setOnAction((ActionEvent event) -> {
+            try {
+                shuffle();
+            } catch (InterruptedException | FileNotFoundException ex) {
+                Logger.getLogger(SlidingPuzzleGame.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         
@@ -93,19 +88,15 @@ public class SlidingPuzzleGame extends Application {
         newPictureButton.setText("New Picture");
         //newPictureButton.setLayoutY(shuffleButton.getLayoutY() 
                 //+ shuffleButton.getHeight() + RIGHT_GROUP_SPACING);
-        newPictureButton.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                configurateFileChooser(fileChooser);
-                File file = fileChooser.showOpenDialog(primaryStage);
-                if(file != null){
-                    try {
-                        loadNewPicture(file);
-                    } catch (FileNotFoundException ex) {
-                        Logger.getLogger(SlidingPuzzleGame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+        newPictureButton.setOnAction((ActionEvent event) -> {
+            FileChooser fileChooser = new FileChooser();
+            configurateFileChooser(fileChooser);
+            File file = fileChooser.showOpenDialog(primaryStage);
+            if(file != null){
+                try {
+                    loadNewPicture(file);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(SlidingPuzzleGame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
