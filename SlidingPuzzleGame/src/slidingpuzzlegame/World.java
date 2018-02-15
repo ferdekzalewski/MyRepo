@@ -5,12 +5,10 @@
  */
 package slidingpuzzlegame;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import static java.lang.Double.min;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Group;
@@ -26,6 +24,7 @@ public class World {
     private int emptyX;
     private int emptyY;
     private int moves;
+    /*
     public World(SlidingPuzzleGame game) throws FileNotFoundException{
         this.game = game;
         this.moves = 0;
@@ -41,6 +40,23 @@ public class World {
         emptyX = game.SIZE - 1;
         emptyY = game.SIZE - 1;
     }
+    */
+    public World(SlidingPuzzleGame game, Image image) throws FileNotFoundException{
+        this.game = game;
+        this.moves = 0;
+        double size = min(image.getHeight(), image.getWidth())/game.SIZE;
+        map = new Piece[game.SIZE][game.SIZE];
+        for(int i = 0; i<game.SIZE; i++){
+            for(int j = 0; j<game.SIZE; j++){
+            map[i][j] = new Piece(image, 
+                    game.SIZE*i+j, j, i, size, this);
+            }
+        }
+        map[game.SIZE - 1][game.SIZE - 1] = null;
+        emptyX = game.SIZE - 1;
+        emptyY = game.SIZE - 1;
+    }
+    
     public void addToGroup(Group group){
         for(Piece[] raw : map){
             for(Piece element : raw){
@@ -115,8 +131,8 @@ public class World {
         return neighbors;
     }
     
-    public void setMapField(int y, int x, Piece piece){
-        map[y][x] = piece;
+    public void setMapField(int i, int j, Piece piece){
+        map[i][j] = piece;
     }
     
     public int getIndexXOfFieldInMap(Piece wanted){
@@ -165,5 +181,9 @@ public class World {
     public void increaseMoves(){
         moves++;
         game.refreshMoves(moves);
+    }
+    
+    public void loadPicture(){
+        
     }
 }
