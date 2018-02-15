@@ -10,7 +10,6 @@ package slidingpuzzlegame;
  * @author Bartek
  */
 
-import javafx.event.EventHandler;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.animation.TranslateTransition;
@@ -41,12 +40,9 @@ public class Piece extends ImageView {
         this.setFitWidth(size);
         this.setX(pozX*size);
         this.setY(pozY*size);
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() { 
-            @Override
-            public void handle(MouseEvent event) {
-                swipe(false);
-                world.checkWin();
-            }
+        this.setOnMouseClicked((MouseEvent event) -> {
+            swipe(false);
+            world.checkWin();
         });
         move = new TranslateTransition();
         move.setDuration(Duration.millis(150)); 
